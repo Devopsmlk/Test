@@ -4,13 +4,12 @@ trigger:
       - main
 
 pool:
-  name: 'Default'  # ← Changed this line
+  name: 'Default'
 
 variables:
   imageName: 'qashqade-app'
   imageTag: '$(Build.BuildId)'
 
-# Everything else stays the same
 stages:
   - stage: Test
     displayName: 'Run Tests'
@@ -18,13 +17,9 @@ stages:
       - job: RunTests
         displayName: 'Execute Unit Tests'
         steps:
-          - task: UsePythonVersion@0
-            inputs:
-              versionSpec: '3.11'
-            displayName: 'Use Python 3.11'
-
           - script: |
-              pip install -r app/requirements.txt
+              python3 --version
+              pip3 install -r app/requirements.txt
             displayName: 'Install Dependencies'
 
           - script: |
