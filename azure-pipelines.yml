@@ -4,12 +4,13 @@ trigger:
       - main
 
 pool:
-  vmImage: 'ubuntu-latest'
+  name: 'Default'  # ← Changed this line
 
 variables:
   imageName: 'qashqade-app'
   imageTag: '$(Build.BuildId)'
 
+# Everything else stays the same
 stages:
   - stage: Test
     displayName: 'Run Tests'
