@@ -9,6 +9,7 @@ pool:
 variables:
   imageName: 'qashqade-app'
   imageTag: '$(Build.BuildId)'
+  acrLoginServer: 'acrqashqade.azurecr.io'
 
 stages:
   - stage: Test
@@ -66,3 +67,29 @@ stages:
               tags: |
                 $(imageTag)
                 latest
+
+  - stage: Deploy
+    displayName: 'Deploy to AKS'
+    dependsOn: Build
+    condition: succeeded()
+    jobs:
+      - job: DeployToAKS
+        displayName: 'Deploy Application to AKS'
+        steps:
+          - task: Kubernetes@1
+            displayName: 'kubectl apply manifests'
+            inputs:
+              connectionType: 'Kubernetes Service Connection'
+              kubernetesServiceEndpoint: 'aks-connection'
+              namespace: 'default'
+              command: 'apply'
+              arguments: '-f k8s/'
+
+          - task: Kubernetes@1
+            displayName: 'Update Image Tag'
+            inputs:
+              connectionType: 'Kubernetes Service Connection'
+              kubernetesServiceEndpoint: 'aks-connection'
+              namespace: 'default'
+              command: 'set'
+              arguments: 'image deployment/qashqade-app qashqade-app=$(acrLoginServer)/$(imageName):$(imageTag)'
