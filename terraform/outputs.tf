@@ -32,3 +32,13 @@ output "kube_config" {
   value     = azurerm_kubernetes_cluster.aks.kube_config_raw
   sensitive = true
 }
+
+output "key_vault_name" {
+  value       = azurerm_key_vault.kv.name
+  description = "The name of the Key Vault"
+}
+
+output "key_vault_uri" {
+  value       = azurerm_key_vault.kv.vault_uri
+  description = "The URI of the Key Vault"
+}
